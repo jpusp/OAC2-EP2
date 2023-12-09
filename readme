@@ -1,0 +1,6 @@
+Procuramos separar a leitura do arquivo em um arquivo diferente(file_reader.c).
+Por isso, para rodar o projeto na linha de comando execute:
+
+gcc -o EP2 src/main.c src/file_reader.c -lm
+
+Observação: -lm foi necessário para vincular a biblioteca de matemática para a função sqrt

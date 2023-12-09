@@ -1,0 +1,4 @@
+"/Users/joao.paulo/Applications/CLion Nova.app/Contents/bin/cmake/mac/bin/cmake" -DCMAKE_BUILD_TYPE=Debug "-DCMAKE_MAKE_PROGRAM=/Users/joao.paulo/Applications/CLion Nova.app/Contents/bin/ninja/mac/ninja" -DCMAKE_C_COMPILER=/opt/homebrew/Cellar/llvm/17.0.5/bin/clang-17 -G Ninja -S /Users/joao.paulo/dev/usp/oac/EP2 -B /Users/joao.paulo/dev/usp/oac/EP2/cmake-build-debug
+-- Configuring done (0.1s)
+-- Generating done (0.0s)
+-- Build files have been written to: /Users/joao.paulo/dev/usp/oac/EP2/cmake-build-debug

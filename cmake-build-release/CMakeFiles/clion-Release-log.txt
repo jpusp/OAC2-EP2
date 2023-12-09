@@ -1,0 +1,12 @@
+"/Users/joao.paulo/Applications/CLion Nova.app/Contents/bin/cmake/mac/bin/cmake" -DCMAKE_BUILD_TYPE=Release "-DCMAKE_MAKE_PROGRAM=/Users/joao.paulo/Applications/CLion Nova.app/Contents/bin/ninja/mac/ninja" -DCMAKE_C_COMPILER=/opt/homebrew/Cellar/llvm/17.0.5/bin/clang-17 -G Ninja -S /Users/joao.paulo/dev/usp/oac/EP2 -B /Users/joao.paulo/dev/usp/oac/EP2/cmake-build-release
+-- The C compiler identification is Clang 17.0.5
+-- Detecting C compiler ABI info
+-- Detecting C compiler ABI info - done
+-- Check for working C compiler: /opt/homebrew/Cellar/llvm/17.0.5/bin/clang-17 - skipped
+-- Detecting C compile features
+-- Detecting C compile features - done
+-- Found OpenMP_C: -fopenmp=libomp  
+-- Found OpenMP: TRUE   
+-- Configuring done (1.5s)
+-- Generating done (0.0s)
+-- Build files have been written to: /Users/joao.paulo/dev/usp/oac/EP2/cmake-build-release
