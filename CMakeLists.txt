@@ -10,7 +10,7 @@ if(OpenMP_C_FOUND)
     set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${OpenMP_EXE_LINKER_FLAGS}")
 endif()
 
-add_executable(EP2 src/main.c src/file_reader.c src/omptest.c)
+add_executable(EP2 src/main.c src/file_reader.c)
 
 set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -fopenmp")
 
