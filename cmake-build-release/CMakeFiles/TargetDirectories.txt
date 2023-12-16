@@ -1,3 +1,0 @@
-/Users/joao.paulo/dev/usp/oac/EP2/cmake-build-release/CMakeFiles/EP2.dir
-/Users/joao.paulo/dev/usp/oac/EP2/cmake-build-release/CMakeFiles/edit_cache.dir
-/Users/joao.paulo/dev/usp/oac/EP2/cmake-build-release/CMakeFiles/rebuild_cache.dir
