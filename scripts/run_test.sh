@@ -1,24 +1,21 @@
 #!/bin/bash
 
-if [ "$#" -ne 1 ]; then
-    echo "Uso: $0 <caminho_absoluto_para_pasta_files>"
-    exit 1
-fi
-
-k_values=(1 3 5)
-thread_counts=(1 2 4 8)
-lineCount=(10000, 20000, 30000, 40000, 50000, 60000, 70000, 80000, 90000, 10000)
-
-pathToFiles=$1
+thread_counts=(1 4 6 8)
+file_limits=(100 250 500 10000 20000 60000)
+xtrainFiles=("/Users/joao.paulo/dev/usp/oac2/OAC2-EP2/files/xtrain_100k.txt")
+ytrainFiles=("/Users/joao.paulo/dev/usp/oac2/OAC2-EP2/files/ytrain_100k.txt")
+xtestFile="/Users/joao.paulo/dev/usp/oac2/OAC2-EP2/files/xtest_10k.txt"
+xtest10kFile="/Users/joao.paulo/dev/usp/oac2/OAC2-EP2/files/xtest_10k.txt"
 
 cd ..
 
-for k in "${k_values[@]}"; do
-    for threads in "${thread_counts[@]}"; do
-        echo "Executando com k=$k e $threads threads, pasta de arquivos em $pathToFiles"
-        ./cmake-build-release/EP2 $k $threads $pathToFiles
+for threads in "${thread_counts[@]}"; do
+    for limits in "${file_limits[@]}" ; do
+        echo "==================================================================="
+        ./cmake-build-release/EP2 "$threads" "${xtrainFiles[0]}" "${ytrainFiles[0]}" $xtestFile $limits
         echo ""
     done
 done
+
 
 cd scripts
