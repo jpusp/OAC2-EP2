@@ -42,7 +42,7 @@
 *.idb
 *.pdb
 
-cmake-build-debug/
+cmake-build-debug
 cmake-build-release
 
 # Kernel Module Compile Results
