@@ -4,11 +4,11 @@
 #include <string.h>
 #include <math.h>
 #include <omp.h>
-#include <stdbool.h>
 
 typedef struct {
     float distance;
     float value;
+    int originalPosition;
 } FloatPair;
 
 float calculateDistance(float *a, float *b, int size) {
@@ -20,24 +20,28 @@ float calculateDistance(float *a, float *b, int size) {
 }
 
 int comparator(const void *p, const void *q) {
-    float l = ((FloatPair *)p)->distance;
-    float r = ((FloatPair *)q)->distance;
-    return (l - r);
+    FloatPair pairL = *(FloatPair *) p;
+    FloatPair pairR = *(FloatPair *) q;
+
+    float l = pairL.distance;
+    float r = pairR.distance;
+
+    float result = l - r;
+
+    if (result > 0) return 1;
+    else if (result < 0) return -1;
+    else return pairL.originalPosition - pairR.originalPosition;
 }
 
-float knn(int k, float **xtrain, float *ytrain, float *xtest, int trainSize, int features) {
+float knn(int k, float **xtrain, float *ytrain, float *xtest, int trainSize, int lineSize) {
     FloatPair distances[trainSize];
     float sum = 0;
 
     #pragma omp parallel for
     for (int i = 0; i < trainSize; i++) {
-//        if ((i % 1000) == 0) {
-//            int thread_id = omp_get_thread_num();
-//            int num_threads = omp_get_num_threads();
-//            printf("Thread %d de %d, iteração %d\n", thread_id, num_threads, i);
-//        }
-        distances[i].distance = calculateDistance(xtrain[i], xtest, features);
+        distances[i].distance = calculateDistance(xtrain[i], xtest, lineSize);
         distances[i].value = ytrain[i];
+        distances[i].originalPosition = i;
     }
 
     qsort(distances, trainSize, sizeof(FloatPair), comparator);
@@ -69,48 +73,19 @@ int main(int argc, char *argv[]) {
         case 4:
             ytrainFilePath = argv[3];
         case 3:
-            fprintf(stderr, "Numero de Threads: %s\n", argv[2]);
-            numThreads = atoi(argv[2]);
-            omp_set_num_threads(numThreads);
-
+            xtrainFilePath = argv[2];
         case 2:
-            fprintf(stderr, "K: %s\n", argv[1]);
-            k = atoi(argv[1]);
+            numThreads = atoi(argv[1]);
+            omp_set_num_threads(numThreads);
             break;
         case 1:
     }
 
-    int xtrainSize, xtrainFeatures, ytrainSize, xtestSize, xtestFeatures;
-
-    char ytrainFilePath[256], xtrainFilePath[256], xtestFilePath[256], outputFilePath[256];
-
-    sprintf(ytrainFilePath, "%s/ytrain.txt", filesPath);
-    sprintf(xtrainFilePath, "%s/xtrain.txt", filesPath);
-    sprintf(xtestFilePath, "%s/xtest.txt", filesPath);
-    sprintf(outputFilePath, "%s/output_test.txt", filesPath);
-
-    if (isExpanded) {
-        sprintf(ytrainFilePath, "%s/ytrain_expanded.txt", filesPath);
-        sprintf(xtrainFilePath, "%s/xtrain_expanded.txt", filesPath);
-        sprintf(xtestFilePath, "%s/xtest_expanded.txt", filesPath);
-        sprintf(outputFilePath, "%s/output_test_expanded.txt", filesPath);
-    }
-
-//    char *ytrainFile = "../files/ytrain.txt";
-//    char *xtrainFile = "../files/xtrain.txt";
-//    char *xtestFile = "../files/xtest.txt";
-//    char *outputFilePath = "../files/output_test.txt";
-//
-//    if (isExpanded) {
-//        ytrainFile = "../files/ytrain_expanded.txt";
-//        xtrainFile = "../files/xtrain_expanded.txt";
-//        xtestFile = "../files/xtest_expanded.txt";
-//        outputFilePath = "../files/output_test_expanded.txt";
-//    }
+    int xtrainSize, xtrainLineSize, ytrainSize, xtestSize, xtestLineSize;
 
     float *ytrain = readYtrainFile(ytrainFilePath, &ytrainSize);
-    float **xtrain = readFeaturesFiles(xtrainFilePath, &xtrainSize, &xtrainFeatures);
-    float **xtest = readFeaturesFiles(xtestFilePath, &xtestSize, &xtestFeatures);
+    float **xtrain = readFeaturesFiles(xtrainFilePath, &xtrainSize, &xtrainLineSize, fileLimit);
+    float **xtest = readFeaturesFiles(xtestFilePath, &xtestSize, &xtestLineSize, -1);
 
     FILE *outputFile = fopen(outputFilePath, "w");
     if (outputFile == NULL) {
@@ -118,23 +93,17 @@ int main(int argc, char *argv[]) {
         exit(1);
     }
 
-
-
     float results[xtestSize];
     double startTime = omp_get_wtime();
 
     #pragma omp parallel for
     for (int i = 0; i < xtestSize; i++) {
-//        int thread_id = omp_get_thread_num();
-//        int num_threads = omp_get_num_threads();
-//        printf("MAIN - Thread %d de %d, iteração %d\n", thread_id, num_threads, i);
-        results[i] = knn(k, xtrain, ytrain, xtest[i], xtrainSize, xtrainFeatures);
+        results[i] = knn(k, xtrain, ytrain, xtest[i], xtrainSize, xtrainLineSize);
     }
 
     double totalTime = omp_get_wtime() - startTime;
 
-    //printf("Tempo gasto: %f ms\n", totalTime);
-    printf("%d;%d;%f",k, numThreads, totalTime);
+    printf("%d;%d;%f", numThreads, xtrainSize, totalTime);
 
     for (int i = 0; i < xtestSize; i++) {
         char *formatter;
