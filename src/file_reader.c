@@ -43,7 +43,7 @@ float *readYtrainFile(const char *filename, int *size) {
 }
 
 
-float **readFeaturesFiles(const char *filename, int *size, int *features) {
+float **readFeaturesFiles(const char *filename, int *size, int *lineSize, int fileLimit) {
     FILE *file = fopen(filename, "r");
     if (file == NULL) {
         perror("Não foi possível abrir o arquivo");
@@ -56,9 +56,9 @@ float **readFeaturesFiles(const char *filename, int *size, int *features) {
         exit(1);
     }
 
-    *features = 1;
+    *lineSize = 1;
     for (int i = 0; line[i]; i++) {
-        if (line[i] == ',') (*features)++;
+        if (line[i] == ',') (*lineSize)++;
     }
 
     fseek(file, 0, SEEK_SET);
@@ -72,18 +72,21 @@ float **readFeaturesFiles(const char *filename, int *size, int *features) {
     }
 
     while (fgets(line, sizeof(line), file)) {
-        array[*size] = malloc(*features * sizeof(float));
+        array[*size] = malloc(*lineSize * sizeof(float));
         if (array[*size] == NULL) {
             perror("Falha na alocação de memória para características");
             exit(1);
         }
 
         char *token = strtok(line, ",");
-        for (int featureIndex = 0; token != NULL && featureIndex < *features; featureIndex++) {
+        for (int featureIndex = 0; token != NULL && featureIndex < *lineSize; featureIndex++) {
             array[*size][featureIndex] = atof(token);
             token = strtok(NULL, ",");
         }
 
+        if (fileLimit != -1 && *size >= fileLimit) {
+            break;
+        }
         (*size)++;
         if (*size >= capacity) {
             capacity *= 2;

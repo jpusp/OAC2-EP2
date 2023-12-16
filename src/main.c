@@ -52,15 +52,22 @@ float knn(int k, float **xtrain, float *ytrain, float *xtest, int trainSize, int
 int main(int argc, char *argv[]) {
     int k = 3;
     int numThreads = 8;
-    char *filesPath = "../files";
+    int fileLimit = -1;
+    char *xtrainFilePath;
+    char *ytrainFilePath;
+    char *xtestFilePath;
+    char *outputFilePath = "output_test.txt";
 
-    bool isExpanded = true;
     omp_set_nested(1);
     omp_set_num_threads(numThreads);
 
     switch (argc) {
+        case 6:
+            fileLimit = atoi(argv[5]);
+        case 5:
+            xtestFilePath = argv[4];
         case 4:
-            filesPath = argv[3];
+            ytrainFilePath = argv[3];
         case 3:
             fprintf(stderr, "Numero de Threads: %s\n", argv[2]);
             numThreads = atoi(argv[2]);
