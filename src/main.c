@@ -78,7 +78,8 @@ int main(int argc, char *argv[]) {
             numThreads = atoi(argv[1]);
             omp_set_num_threads(numThreads);
             break;
-        case 1:
+        default:
+            break;
     }
 
     int xtrainSize, xtrainLineSize, ytrainSize, xtestSize, xtestLineSize;
