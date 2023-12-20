@@ -1,11 +1,13 @@
 #!/bin/bash
 
 thread_counts=(1 4 6 8)
-file_limits=(100 250 500 10000 20000 60000)
+file_limits=(100 500 1000 5000 10000 20000 50000 100000 200000)
 cd ..
 
-xtrainFile="./files/xtrain_100k.txt"
-ytrainFile="./files/ytrain_100k.txt"
+#xtrainFile="./files/xtrain_100k.txt"
+#ytrainFile="./files/ytrain_100k.txt"
+xtrainFile="./files/xtrain200000.txt"
+ytrainFile="./files/ytrain200000.txt"
 xtestFile="./files/xtest_10k.txt"
 
 
